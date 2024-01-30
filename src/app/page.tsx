@@ -1,5 +1,7 @@
+import { redirect } from 'next/navigation'
+
 const HomePage = () => {
-  return null
+  redirect('/sheets')
 }
 
 export default HomePage
