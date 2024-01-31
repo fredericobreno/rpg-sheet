@@ -1,19 +1,11 @@
 'use client'
 
-import { LOCAL_STORAGE_KEY } from '@/consts'
-import { FormType } from './sheet-form'
 import { SimpleSheet } from './simple-sheet'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useSheetsContext } from '@/hooks/use-sheets-context'
 
 export const SimpleSheetList = () => {
-  const [sheets, setSheets] = useState<FormType[]>([])
-
-  useEffect(() => {
-    setSheets(
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]') as FormType[],
-    )
-  }, [])
+  const { sheets } = useSheetsContext()
 
   return sheets.map((sheet) => (
     <Link key={sheet.id} href={`/sheets/${sheet.id}`}>

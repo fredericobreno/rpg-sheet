@@ -4,12 +4,11 @@ import { useForm } from 'react-hook-form'
 import { Form } from '../ui/form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { forwardRef, useState } from 'react'
+import { forwardRef } from 'react'
 import { Section } from './section'
 import { InputField } from './input-field'
 import { RatingField } from './rating-field'
-import { LOCAL_STORAGE_KEY } from '@/consts'
-import { revalidatePath } from 'next/cache'
+import { useSheetsContext } from '@/hooks/use-sheets-context'
 
 const formSchema = z.object({
   id: z.string(),
@@ -93,7 +92,7 @@ type SheetFormProps = {
 
 export const SheetForm = forwardRef<HTMLFormElement, SheetFormProps>(
   ({ sheet }, ref) => {
-    const [, rerender] = useState(false)
+    const { sheets, setSheets } = useSheetsContext()
     const form = useForm<FormType>({
       resolver: zodResolver(formSchema),
       defaultValues: sheet || {
@@ -172,17 +171,15 @@ export const SheetForm = forwardRef<HTMLFormElement, SheetFormProps>(
     })
 
     const onSubmit = (data: FormType) => {
-      const rpgSheets = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY) || '[]',
-      ) as FormType[]
-      const sheetIndex = rpgSheets.findIndex((sheet) => sheet.id === data.id)
+      const sheetIndex = sheets.findIndex((sheet) => sheet.id === data.id)
 
       if (sheetIndex === -1) {
-        rpgSheets.push(data)
+        setSheets([...sheets, data])
       } else {
+        const rpgSheets = [...sheets]
         rpgSheets[sheetIndex] = data
+        setSheets(rpgSheets)
       }
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(rpgSheets))
     }
 
     return (

@@ -9,10 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { LOCAL_STORAGE_KEY } from '@/consts'
+import { useSheetsContext } from '@/hooks/use-sheets-context'
 import { useEffect, useRef, useState } from 'react'
 
-export const SheetPage = ({ params: { id } }: { params: { id: string } }) => {
+const SheetPage = ({ params: { id } }: { params: { id: string } }) => {
+  const { sheets } = useSheetsContext()
   const [sheet, setSheet] = useState<FormType | null>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -23,13 +24,10 @@ export const SheetPage = ({ params: { id } }: { params: { id: string } }) => {
   }
 
   useEffect(() => {
-    const rpgSheets = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY) || '[]',
-    ) as FormType[]
-    const sheet = rpgSheets.find((sheet) => sheet.id === id)
+    const sheet = sheets.find((sheet) => sheet.id === id)
 
     if (sheet) setSheet(sheet)
-  }, [id])
+  }, [id, sheets])
 
   if (!sheet) return null
 

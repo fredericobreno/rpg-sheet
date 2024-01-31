@@ -4,6 +4,8 @@ import './globals.css'
 import { cn } from '@/lib/utils'
 
 import { Card } from '@/components/ui/card'
+import { SheetsContextProvider } from '@/contexts/sheets-context'
+import { BackButton } from '@/components/back-button'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, 'flex h-dvh p-4')}>
-        <Card className="flex flex-1 flex-col">{children}</Card>
+        <SheetsContextProvider>
+          <div className="flex flex-1 flex-col gap-4">
+            <BackButton />
+            <Card className="flex flex-1 flex-col">{children}</Card>
+          </div>
+        </SheetsContextProvider>
       </body>
     </html>
   )
